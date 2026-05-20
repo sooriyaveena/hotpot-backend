@@ -2,55 +2,142 @@ package com.hotpot.deliveryapplication.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hotpot.deliveryapplication.dto.FeedbackRequest;
+import com.hotpot.deliveryapplication.exception.ResourceNotFoundException;
 import com.hotpot.deliveryapplication.model.FeedBack;
 import com.hotpot.deliveryapplication.model.Order;
+import com.hotpot.deliveryapplication.model.Restaurant;
 import com.hotpot.deliveryapplication.model.User;
 import com.hotpot.deliveryapplication.repository.FeedBackRepo;
 import com.hotpot.deliveryapplication.repository.OrderRepo;
+import com.hotpot.deliveryapplication.repository.RestaurantRepo;
 import com.hotpot.deliveryapplication.repository.UserRepo;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class FeedBackService {
 
-    @Autowired
-    private FeedBackRepo fr;
+    private final FeedBackRepo
+    feedbackRepository;
 
-    @Autowired
-    private OrderRepo or;
+    private final UserRepo
+    userRepository;
 
-    @Autowired
-    private UserRepo ur;
- 
-    public FeedBack addFeedback(int userId, int orderId, FeedBack feedback) {
+    private final RestaurantRepo
+    restaurantRepository;
 
-        User user = ur.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    private final OrderRepo
+    orderRepository;
 
-        Order order = or.findById(orderId)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-        if (order.getUser().getUserId() != userId) {
-            throw new RuntimeException("Unauthorized");
-        }
-        if (order.getStatus() != Order.Status.DELIVERED) {
-            throw new RuntimeException("Cannot give feedback before delivery");
-        }
+    public FeedBack addFeedback(
+            FeedbackRequest request) {
 
-        if (fr.existsByOrder_OrderId(orderId)) {
-            throw new RuntimeException("Feedback already given");
-        }
+        User user =
+                userRepository.findById(
+                        request.getUserId()
+                )
+
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found"
+                        ));
+
+        Restaurant restaurant =
+                restaurantRepository.findById(
+                        request.getRestaurantId()
+                )
+
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Restaurant not found"
+                        ));
+
+        Order order =
+                orderRepository.findById(
+                        request.getOrderId()
+                )
+
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Order not found"
+                        ));
+
+        FeedBack feedback =
+                new FeedBack();
 
         feedback.setUser(user);
+
+        feedback.setRestaurant(
+                restaurant
+        );
+
         feedback.setOrder(order);
 
-        return fr.save(feedback);
+        feedback.setRating(
+                request.getRating()
+        );
+
+        feedback.setComment(
+                request.getComment()
+        );
+
+        FeedBack savedFeedback =
+                feedbackRepository.save(
+                        feedback
+                );
+
+        double currentRating =
+                restaurant.getRating();
+
+        int totalReviews =
+                restaurant.getTotalReviews();
+
+        double updatedRating =
+
+                (
+                    (currentRating * totalReviews)
+
+                    +
+
+                    request.getRating()
+                )
+
+                /
+
+                (totalReviews + 1);
+
+        restaurant.setRating(
+                updatedRating
+        );
+
+        restaurant.setTotalReviews(
+                totalReviews + 1
+        );
+
+        restaurantRepository.save(
+                restaurant
+        );
+
+        return savedFeedback;
     }
-    public List<FeedBack> getFeedbackByRestaurant(int restaurantId) {
-        return fr.findByOrder_Restaurant_RestaurantId(restaurantId);
+
+    public List<FeedBack>
+    getRestaurantFeedbacks(
+            int restaurantId) {
+
+        return feedbackRepository
+                .findByRestaurantRestaurantId(
+                        restaurantId
+                );
     }
-    public List<FeedBack> getFeedbackByUser(int userId) {
-        return fr.findByUser_UserId(userId);
+
+    public List<FeedBack> getAll() {
+
+        return feedbackRepository
+                .findAll();
     }
 }
