@@ -2,7 +2,6 @@ package com.hotpot.deliveryapplication.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
@@ -41,12 +40,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer orderId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
-    private User user;
+   @ManyToOne
+@JoinColumn(name = "user_id")
+@JsonIgnoreProperties({"orders"})
+private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
@@ -59,10 +58,16 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "delivery_id")
-    private DeliveryPerson deliveryPerson;
+    @ManyToOne(fetch = FetchType.EAGER)
+@JoinColumn(name = "delivery_id")
+@JsonIgnoreProperties({"orders"})
+private DeliveryPerson deliveryPerson;
 
+    @JsonIgnoreProperties({
+        "order",
+        "hibernateLazyInitializer",
+        "handler"
+    })
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 

@@ -13,6 +13,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -41,8 +43,14 @@ public class Restaurant {
     @NotBlank(message = "Location is required")
     private String location;
 
+     @NotBlank(message = "Cuisine cannot be empty")
+    private String cuisine;
+
     @Pattern(regexp = "^[0-9]{10}$", message = "Invalid phone number")
     private String contactNumber;
+
+     @NotBlank(message = "Delivery time required")
+    private String deliveryTime;
 
     @Email(message = "Invalid email")
     private String email;
@@ -59,10 +67,38 @@ public class Restaurant {
 )
 private List<MenuItem> menuItems;
 
-
-      @JsonIgnore
-    @OneToMany(mappedBy = "restaurant")
-    private List<Category> categories;
+@JsonIgnore
+@OneToMany(
+    mappedBy = "restaurant",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+)
+private List<Category> categories;
 
     private String image;
+
+      @DecimalMin(
+        value = "0.0",
+        message = "Rating must be >= 0"
+    )
+
+    @DecimalMax(
+        value = "5.0",
+        message = "Rating must be <= 5"
+    )
+
+    private double rating;
+
+    	@JsonIgnore
+@OneToMany(mappedBy = "restaurant")
+private List<Order> orders;
+    private int totalReviews;
+    @OneToMany(
+    	    mappedBy = "restaurant",
+    	    cascade = CascadeType.ALL
+    	)
+        
+    	@JsonIgnore
+    	private List<FeedBack> feedbacks;
+    private boolean open = true;
 }

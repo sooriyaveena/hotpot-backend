@@ -3,11 +3,14 @@ package com.hotpot.deliveryapplication.service;
 import java.util.List;
     
 import org.springframework.stereotype.Service;
-import com.hotpot.deliveryapplication.model.*;
-import com.hotpot.deliveryapplication.repository.*;
 
-    
-    
+import com.hotpot.deliveryapplication.model.Cart;
+import com.hotpot.deliveryapplication.model.CartItem;
+import com.hotpot.deliveryapplication.model.MenuItem;
+import com.hotpot.deliveryapplication.repository.CartItemRepo;
+import com.hotpot.deliveryapplication.repository.CartRepo;
+import com.hotpot.deliveryapplication.repository.MenuItemRepo;
+
 import lombok.RequiredArgsConstructor;
     
 @Service

@@ -1,5 +1,7 @@
 package com.hotpot.deliveryapplication.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -21,11 +23,18 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({
+    "hibernateLazyInitializer",
+    "handler"
+})
 public class MenuItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer itemId;
+
+    @NotBlank(message = "Description required")
+    private String description;
 
     @NotBlank(message = "Item name required")
     private String name;
@@ -33,20 +42,28 @@ public class MenuItem {
     @Positive(message = "Price must be positive")
     private double price;
 
-    private boolean isAvailable;
+    private String availabilityStatus;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "restaurant_id")
-   
-    private Restaurant restaurant;
+    private String dietaryType;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-  
-  
-    private Category category;
-
-    private boolean veg;
+    private String timing;
 
     private String image;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id")
+    @JsonIgnoreProperties({
+        "menuItems",
+        "orders"
+    })
+    private Restaurant restaurant;
+
+    
+
+    @ManyToOne(fetch = FetchType.EAGER)
+@JoinColumn(name = "category_id")
+@JsonIgnoreProperties({
+    "restaurant"
+})
+private Category category;
 }

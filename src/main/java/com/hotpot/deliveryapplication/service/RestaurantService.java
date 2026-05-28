@@ -40,9 +40,16 @@ public class RestaurantService {
 
     public void deleteRestaurant(int id) {
 
-    Restaurant restaurant = repo.findById(id)
+    Restaurant restaurant = repo
+            .findById(id)
             .orElseThrow(() ->
-                    new RuntimeException("Restaurant not found"));
+                new RuntimeException("Restaurant not found"));
+
+    restaurant.getMenuItems().clear();
+
+    restaurant.getCategories().clear();
+
+    restaurant.getFeedbacks().clear();
 
     repo.delete(restaurant);
 }

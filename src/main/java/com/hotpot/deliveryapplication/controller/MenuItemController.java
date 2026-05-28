@@ -18,7 +18,6 @@ import com.hotpot.deliveryapplication.service.MenuItemService;
 
 import lombok.RequiredArgsConstructor;
 
-
 @RestController
 @RequestMapping("/menu")
 @RequiredArgsConstructor
@@ -28,12 +27,17 @@ public class MenuItemController {
 
     @GetMapping("/all")
     public ResponseEntity<ApiResponse<List<MenuItem>>> getAll() {
-        List<MenuItem> items = service.getAll();
+
+        List<MenuItem> items =
+                service.getAll();
 
         return ResponseEntity.ok(
+
                 ApiResponse.<List<MenuItem>>builder()
                         .success(true)
-                        .message("Menu items fetched successfully")
+                        .message(
+                                "Menu items fetched successfully"
+                        )
                         .data(items)
                         .build()
         );
@@ -41,47 +45,94 @@ public class MenuItemController {
 
     @GetMapping("/filter")
     public ResponseEntity<ApiResponse<List<MenuItem>>> filter(
-            @RequestParam(required = false) Integer categoryId,
-            @RequestParam(required = false) Boolean isVeg,
-            @RequestParam(required = false) String keyword) {
 
-        List<MenuItem> items = service.filterItems(categoryId, isVeg, keyword);
+            @RequestParam(required = false)
+            Integer categoryId,
+
+            @RequestParam(required = false)
+            String dietaryType,
+
+            @RequestParam(required = false)
+            String keyword
+    ) {
+
+        List<MenuItem> items =
+                service.filterItems(
+                        categoryId,
+                        dietaryType,
+                        keyword
+                );
 
         return ResponseEntity.ok(
+
                 ApiResponse.<List<MenuItem>>builder()
                         .success(true)
-                        .message("Filtered menu items fetched")
+                        .message(
+                                "Filtered menu items fetched"
+                        )
                         .data(items)
                         .build()
         );
     }
 
     @PostMapping("/save")
-    public ResponseEntity<ApiResponse<MenuItem>> save(@RequestBody MenuItem item) {
-        MenuItem saved = service.save(item);
+    public ResponseEntity<ApiResponse<MenuItem>> save(
+            @RequestBody MenuItem item
+    ) {
+
+        MenuItem saved =
+                service.save(item);
 
         return ResponseEntity.ok(
+
                 ApiResponse.<MenuItem>builder()
                         .success(true)
-                        .message("Menu item saved successfully")
+                        .message(
+                                "Menu item saved successfully"
+                        )
                         .data(saved)
                         .build()
         );
     }
 
     @DeleteMapping("/{id}")
-public ResponseEntity<ApiResponse<String>> delete(
-        @PathVariable int id) {
+    public ResponseEntity<ApiResponse<String>> delete(
+            @PathVariable int id
+    ) {
 
-    service.deleteMenuItem(id);
+        service.deleteMenuItem(id);
 
-    return ResponseEntity.ok(
+        return ResponseEntity.ok(
 
-            ApiResponse.<String>builder()
-                    .success(true)
-                    .message("Menu item deleted successfully")
-                    .data(null)
-                    .build()
-    );
-}
+                ApiResponse.<String>builder()
+                        .success(true)
+                        .message(
+                                "Menu item deleted successfully"
+                        )
+                        .data(null)
+                        .build()
+        );
+    }
+
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<ApiResponse<List<MenuItem>>> getByRestaurant(
+            @PathVariable int restaurantId
+    ) {
+
+        List<MenuItem> items =
+                service.getByRestaurant(
+                        restaurantId
+                );
+
+        return ResponseEntity.ok(
+
+                ApiResponse.<List<MenuItem>>builder()
+                        .success(true)
+                        .message(
+                                "Restaurant menu fetched successfully"
+                        )
+                        .data(items)
+                        .build()
+        );
+    }
 }

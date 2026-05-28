@@ -6,8 +6,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FeedbackRequest {
-    private double restaurantRating;
-    private double deliveryRating;
-    private double overallRating;
+    
+    private int userId;
+
+    private int restaurantId;
+
+    private int orderId;
+
+    private int rating;
+
     private String comment;
 }

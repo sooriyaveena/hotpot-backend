@@ -6,22 +6,45 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.hotpot.deliveryapplication.model.MenuItem;
 
-public interface MenuItemRepo extends JpaRepository<MenuItem, Integer> {
+public interface MenuItemRepo
+        extends JpaRepository<MenuItem, Integer> {
 
-    List<MenuItem> findByRestaurant_RestaurantId(int restaurantId);
+    List<MenuItem>
+    findByRestaurant_RestaurantId(
+            int restaurantId
+    );
 
-    List<MenuItem> findByCategoryCategoryId(int categoryId);
+    List<MenuItem>
+    findByCategoryCategoryId(
+            int categoryId
+    );
 
-    List<MenuItem> findByVeg(boolean veg);
+    List<MenuItem>
+    findByDietaryType(
+            String dietaryType
+    );
 
-    List<MenuItem> findByCategoryCategoryIdAndVeg(int categoryId, boolean veg);
+    List<MenuItem>
+    findByCategoryCategoryIdAndDietaryType(
+            int categoryId,
+            String dietaryType
+    );
 
-    List<MenuItem> findByNameContainingIgnoreCase(String keyword);
+    List<MenuItem>
+    findByNameContainingIgnoreCase(
+            String keyword
+    );
 
-    List<MenuItem> findByNameContainingIgnoreCaseAndCategoryCategoryId(String name, int categoryId);
+    List<MenuItem>
+    findByNameContainingIgnoreCaseAndCategoryCategoryId(
+            String name,
+            int categoryId
+    );
 
-    List<MenuItem> findByNameContainingIgnoreCaseAndCategoryCategoryIdAndVeg(
-            String name, int categoryId, boolean veg);
-
-
+    List<MenuItem>
+    findByNameContainingIgnoreCaseAndCategoryCategoryIdAndDietaryType(
+            String name,
+            int categoryId,
+            String dietaryType
+    );
 }

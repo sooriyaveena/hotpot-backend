@@ -9,11 +9,15 @@ import lombok.Setter;
 @Setter
 @Builder
 public class FeedBackResponse {
-    private int feedbackId;
-    private int userId;
-    private int orderId;
-    private double restaurantRating;
-    private double deliveryRating;
-    private double overallRating;
+      private int feedbackId;
+
+    private Integer userId;
+
+    private Integer orderId;
+
+    private Integer restaurantId;
+
+    private int rating;
+
     private String comment;
 }

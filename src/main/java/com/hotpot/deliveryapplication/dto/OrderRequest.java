@@ -26,4 +26,8 @@ public class OrderRequest {
     @NotBlank(message = "Shipping address cannot be empty")
     @Size(max = 500, message = "Address too long")
     private String address;
+
+    private String paymentMethod;
+
+
 }

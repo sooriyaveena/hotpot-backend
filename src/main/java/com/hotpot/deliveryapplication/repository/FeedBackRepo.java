@@ -13,4 +13,8 @@ public interface FeedBackRepo extends JpaRepository<FeedBack, Integer> {
     List<FeedBack> findByOrder_Restaurant_RestaurantId(int restaurantId);
 
     List<FeedBack> findByUser_UserId(int userId);
+    List<FeedBack>
+    findByRestaurantRestaurantId(
+            int restaurantId
+    );
 }

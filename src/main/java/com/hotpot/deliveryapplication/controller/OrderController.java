@@ -3,6 +3,7 @@ package com.hotpot.deliveryapplication.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,10 +33,16 @@ public class OrderController {
     public ResponseEntity<ApiResponse<Order>> placeOrder(@Valid @RequestBody OrderRequest request) {
 
         Order order = service.placeOrder(
-                request.getUserId(),
-                request.getCartId(),
-                request.getAddress()
-        );
+
+    request.getUserId(),
+
+    request.getCartId(),
+
+    request.getAddress(),
+
+    request.getPaymentMethod()
+
+);
 
         return ResponseEntity.ok(
                 ApiResponse.<Order>builder()
@@ -99,4 +106,36 @@ public class OrderController {
                         .build()
         );
     }
+    @GetMapping("/user/{id}")
+public ResponseEntity<ApiResponse<List<Order>>> getOrdersByUser(
+        @PathVariable int id
+) {
+
+    List<Order> orders = service.getOrdersByUser(id);
+
+    return ResponseEntity.ok(
+            ApiResponse.<List<Order>>builder()
+                    .success(true)
+                    .message("User orders fetched successfully")
+                    .data(orders)
+                    .build()
+    );
+}
+
+@DeleteMapping("/delete/{id}")
+public ResponseEntity<ApiResponse<String>> deleteOrder(
+        @PathVariable int id
+) {
+
+    service.deleteOrder(id);
+
+    return ResponseEntity.ok(
+
+            ApiResponse.<String>builder()
+                    .success(true)
+                    .message("Order Deleted Successfully")
+                    .data(null)
+                    .build()
+    );
+}
 }

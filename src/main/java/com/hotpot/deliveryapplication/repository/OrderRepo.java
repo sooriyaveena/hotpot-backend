@@ -9,5 +9,9 @@ import com.hotpot.deliveryapplication.model.Order;
 public interface OrderRepo extends JpaRepository<Order, Integer>{
 
     public List<Order> findByUser_UserId(int userId);
+    List<Order>
+	findByUserUserId(
+	        int userId
+	);
     
 }
